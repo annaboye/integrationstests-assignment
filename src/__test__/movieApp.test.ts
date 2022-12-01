@@ -28,6 +28,8 @@ describe("init", () => {
     (document.getElementById("searchForm") as HTMLFormElement).submit();
 
     expect(spy).toHaveBeenCalledTimes(1);
+
+    document.body.innerHTML = "";
   });
 });
 
@@ -45,6 +47,7 @@ describe("displayNoResult", () => {
     expect(document.querySelectorAll("p")[0].innerHTML).toBe(
       "Inga sökresultat att visa"
     );
+    document.body.innerHTML = "";
   });
 });
 
@@ -68,12 +71,17 @@ describe("createHtml", () => {
     expect(document.querySelectorAll("div.movie").length).toBe(3);
     expect(document.querySelectorAll("img").length).toBe(3);
   });
+  document.body.innerHTML = "";
 });
 
 describe("handleSubmit", () => {
-  test("should createHtml when getData resolves", async () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.resetAllMocks();
+  });
+  test("should create elements when searchText", async () => {
     document.body.innerHTML = `<form id="searchForm">
-        <input type="text" id="searchText" placeholder="Skriv titel här" />
+        <input type="text" id="searchText" value="söktext" placeholder="Skriv titel här" />
         <button type="submit" id="search">Sök</button>
       </form><div id="movie-container"></div>`;
 
@@ -82,5 +90,35 @@ describe("handleSubmit", () => {
       "Harry"
     );
     expect(document.querySelectorAll("div").length).toBe(4);
+    document.body.innerHTML = "";
+  });
+
+  test("should call createHtml when searchtext", async () => {
+    document.body.innerHTML = `<form id="searchForm">
+    <input type="text" id="searchText"  placeholder="Skriv titel här" />
+    <button type="submit" id="search">Sök</button>
+  </form><div id="movie-container"></div>`;
+
+    (document.getElementById("searchText") as HTMLInputElement).value =
+      "söktext";
+    let spy = jest.spyOn(functions, "createHtml").mockReturnValue();
+
+    await functions.handleSubmit();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test("should call displayNoResult when no searchtext", async () => {
+    document.body.innerHTML = `<form id="searchForm">
+    <input type="text" id="searchText"  placeholder="Skriv titel här" />
+    <button type="submit" id="search">Sök</button>
+  </form><div id="movie-container"></div>`;
+
+    (document.getElementById("searchText") as HTMLInputElement).value = "";
+    let spy = jest.spyOn(functions, "displayNoResult").mockReturnValue();
+
+    await functions.handleSubmit();
+
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
