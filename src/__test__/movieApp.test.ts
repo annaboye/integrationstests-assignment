@@ -81,7 +81,7 @@ describe("handleSubmit", () => {
   });
   test("should create elements when searchText", async () => {
     document.body.innerHTML = `<form id="searchForm">
-        <input type="text" id="searchText" value="söktext" placeholder="Skriv titel här" />
+        <input type="text" id="searchText" value="Search is found" placeholder="Skriv titel här" />
         <button type="submit" id="search">Sök</button>
       </form><div id="movie-container"></div>`;
 
@@ -100,12 +100,13 @@ describe("handleSubmit", () => {
   </form><div id="movie-container"></div>`;
 
     (document.getElementById("searchText") as HTMLInputElement).value =
-      "söktext";
+      "Search is found";
     let spy = jest.spyOn(functions, "createHtml").mockReturnValue();
 
     await functions.handleSubmit();
 
     expect(spy).toHaveBeenCalledTimes(1);
+    document.body.innerHTML = "";
   });
 
   test("should call displayNoResult when no searchtext", async () => {
@@ -115,6 +116,23 @@ describe("handleSubmit", () => {
   </form><div id="movie-container"></div>`;
 
     (document.getElementById("searchText") as HTMLInputElement).value = "";
+
+    let spy = jest.spyOn(functions, "displayNoResult").mockReturnValue();
+
+    await functions.handleSubmit();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test("should call displayNoResult when search not found", async () => {
+    document.body.innerHTML = `<form id="searchForm">
+    <input type="text" id="searchText"  placeholder="Skriv titel här" />
+    <button type="submit" id="search">Sök</button>
+  </form><div id="movie-container"></div>`;
+
+    (document.getElementById("searchText") as HTMLInputElement).value =
+      "search not found";
+
     let spy = jest.spyOn(functions, "displayNoResult").mockReturnValue();
 
     await functions.handleSubmit();
