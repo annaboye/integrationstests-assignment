@@ -1,5 +1,8 @@
 # Inlämning - Integrationstester
 
+Detta var en uppgift i kursen "testning" på Medieinstitutet.
+
+## Orginal uppgiften:
 Detta projekt skall fungera som mall för vad ni skall testa i denna del av kursen, asynkrona tester.
 
 ## Att göra
